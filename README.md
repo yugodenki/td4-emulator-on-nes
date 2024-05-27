@@ -3,11 +3,22 @@
 
 ![Screenshot of TD4 Emulator](./img/td4emu_screenshot_01.png)
 
+実際の動作画面はこちら↓
+
+<a href="https://youtu.be/9JuJCsVXAZA?si=PUqnEEk0uaylG45c" target="_blank">![YouTube video of TD4 Emulator on NES](./img/td4emu_youtube_01.png)</a>
+
+
 ## 事前に必要なもの
 - [cc65][cc65_getting_started_link]のインストール
 - 生成した.nesファイルを実行するためのNESエミュレータ
 
 ## .nesファイルの準備
+
+本リポジトリをクローンします。
+
+```bash
+git clone https://github.com/yugodenki/td4-emulator-on-nes.git
+```
 
 cc65を用いてアセンブルを行います。
 
@@ -59,7 +70,7 @@ IN  B      ; 01100000  INPUTのデータをBレジスタに転送
 OUT B      ; 10010000  Bレジスタの内容をOUTPUTに表示
 OUT Im     ; 1011xxxx  Imの内容をOUTPUTに表示
 
-※下位4-bitのxxxxはImデータを表しています。
+; ※下位4-bitのxxxxはImデータを表しています。
 ```
 
 ### 下位4-bitに`0000`を指定する前提となっている命令について
@@ -81,7 +92,8 @@ MOV B, A + Im   ; 0100xxxx  Aレジスタ + Imの内容をBレジスタに転送
 IN + Im  A      ; 0010xxxx  INPUT + Imの内容をAレジスタに転送
 IN + Im  B      ; 0110xxxx  INPUT + Imの内容をBレジスタに転送
 OUT B + Im      ; 1001xxxx  Bレジスタ + Imの内容をOUTPUTに表示
-※ さらに、全加算器を通るため、これらの５命令もキャリーフラグに影響を与えます。
+
+; ※さらに、全加算器を通るため、これらの５命令もキャリーフラグに影響を与えます。
 ```
 
 本エミュレータではこの仕様も再現しているため、転送命令と加算命令を１命令に短縮するなどして、16バイトのROMを最大限に活かすことができます。
