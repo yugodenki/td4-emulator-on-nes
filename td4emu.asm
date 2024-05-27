@@ -108,6 +108,39 @@ RESET:
     SEI                       ; Disable interrupts
     CLD                       ; Clear decimal mode
 
+    LDX #$FF
+    TXS  ; Setup stack
+    INX  ; X is 0
+    STX PPU_CTRL  ; Disable NMI
+    STX PPU_MASK  ; Disable rendering
+    STA $4010  ; Disable DMC IRQs          
+
+ResetVBlankWait1:
+    BIT PPU_STATUS
+    BPL ResetVBlankWait1
+
+; Reset memory to a "known" state
+    LDX #0
+    LDA #0
+clrmem:
+    STA $0000, X
+    STA $0100, X
+    STA $0200, X
+    STA $0300, X
+    STA $0400, X
+    STA $0500, X
+    STA $0600, X
+    STA $0700, X
+    INX
+    BNE clrmem
+
+ResetVBlankWait2:
+    BIT PPU_STATUS
+    BPL ResetVBlankWait2
+
+    JSR loadBackground
+
+setupVariables:
     ; Set the cursor sprite to $84
     LDA #$84
     STA cursor_sprite
@@ -139,11 +172,6 @@ RESET:
     STA td4speed_frames
     LDA #30
     STA td4speed_frames_half
-
-    STX PPU_CTRL              ; Disable NMI
-    STX PPU_MASK
-
-    JSR loadBackground
 
 MainLoop:
     JSR VBlankWait1
