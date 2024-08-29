@@ -987,6 +987,20 @@ loadBackground:
         INX
         CPX #192
         BNE loadBgMainpaneFourthQuarter
+
+    ; Explicitly set palette
+    LDX #0  ; Count up to 3F
+    LDA #$23
+    STA PPU_ADDR
+    LDA #$C0
+    STA PPU_ADDR
+
+    LDA #0
+    setBgPalette:
+        STA PPU_DATA
+        INX
+        CPX #$40
+        BNE setBgPalette
     
     doneLoadingBg:
     LDA #$00
